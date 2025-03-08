@@ -97,3 +97,19 @@ def create_tables():
 with app.app_context():
     create_tables()
     restore_from_replit_db()
+
+# At the top of your app.py, after the imports
+import traceback
+
+# Add this error handler
+@app.errorhandler(500)
+def internal_error(error):
+    app.logger.error('Server Error: %s', str(error))
+    app.logger.error('Traceback: %s', traceback.format_exc())
+    return "Internal Server Error", 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    app.logger.error('Unhandled Exception: %s', str(e))
+    app.logger.error('Traceback: %s', traceback.format_exc())
+    return "Internal Server Error", 500
