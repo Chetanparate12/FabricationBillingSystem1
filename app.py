@@ -20,16 +20,17 @@ sqlite_path = "instance/bills.db"
 # Always preserve the database - removed the code that deletes it
 
 # Use a persistent database path for deployment
-if os.environ.get("REPLIT_DEPLOYMENT") == "1":
-    # In deployment, use a fixed path for persistence
-    os.makedirs("/home/runner/appdata", exist_ok=True)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/runner/appdata/bills.db"
+# Update the database configuration section
+if os.environ.get("RENDER") == "1":
+    # In Render deployment, use the specified data directory
+    os.makedirs("/data", exist_ok=True)
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////data/bills.db"
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///bills.db")
 
-# Set environment variable to indicate deployment status
-if os.environ.get("REPLIT_DEPLOYMENT") != "1":
-    os.environ["REPLIT_DEPLOYMENT"] = "0"
+# Remove or comment out Replit specific code
+# if os.environ.get("REPLIT_DEPLOYMENT") != "1":
+#     os.environ["REPLIT_DEPLOYMENT"] = "0"
 
 # Restore data from Replit DB if SQLite is empty
 def restore_from_replit_db():
